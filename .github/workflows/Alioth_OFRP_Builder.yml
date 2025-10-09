@@ -50,6 +50,11 @@ on:
           - Magisk
           - MagiskAlpha
           - None
+      USE_CCACHE:
+        description: '是否使用 ccache 编译'
+        type: boolean
+        required: true
+        default: true
       OF_MAINTAINER:
         description: '输入维护者名称'
         required: true
@@ -118,9 +123,27 @@ jobs:
         cd ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}/${{ inputs.DEVICE_PATH }}
         if ! grep -q 'FOX_USE_SPECIFIC_MAGISK_ZIP' vendorsetup.sh; then (echo 'export FOX_USE_SPECIFIC_MAGISK_ZIP=~/twrp_prebuilt/Magisk/${{ inputs.MAGISK_VERSION }}.apk'>>vendorsetup.sh && echo "Added FOX_USE_SPECIFIC_MAGISK_ZIP in vendorsetup.sh"); else sed -i 's/.*export FOX_USE_SPECIFIC_MAGISK_ZIP.*/export FOX_USE_SPECIFIC_MAGISK_ZIP=\~\/twrp_prebuilt\/Magisk\/${{ inputs.MAGISK_VERSION }}.apk/' vendorsetup.sh; fi
 
+    - name: 💾 设置ccache缓存
+      if: inputs.USE_CCACHE == true
+      uses: actions/cache@v4
+      with:
+        path: ~/.ccache
+        key: ${{ runner.os }}-ccache-${{ inputs.DEVICE_NAME }}-${{ inputs.MANIFEST_BRANCH }}-${{ inputs.DEVICE_TREE_BRANCH }}
+        restore-keys: |
+          ${{ runner.os }}-ccache-${{ inputs.DEVICE_NAME }}-${{ inputs.MANIFEST_BRANCH }}-
+          ${{ runner.os }}-ccache-${{ inputs.DEVICE_NAME }}-
+          ${{ runner.os }}-ccache-
+
     - name: 🔨 构建 OrangeFox
       run: |
         cd ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ inputs.MANIFEST_BRANCH }}
+        if [ "${{ inputs.USE_CCACHE }}" = "true" ]; then
+          export CCACHE_DIR=~/.ccache
+          export USE_CCACHE=1
+          export CCACHE_EXEC=/usr/bin/ccache
+          ccache -M 50G
+          ccache -o compression=true
+        fi
         set +e
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
@@ -132,6 +155,11 @@ jobs:
         else
           lunch twrp_${{ inputs.DEVICE_NAME }}-eng && make clean && mka adbd ${{ inputs.BUILD_TARGET }}image
         fi
+
+    - name: 📊 显示ccache统计信息
+      if: inputs.USE_CCACHE == true
+      run: |
+        ccache -sv
 
     - name: 🏷️ 设置发布属性
       run: |
