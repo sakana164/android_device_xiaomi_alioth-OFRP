@@ -875,6 +875,7 @@
 		<string name="module_install">安装</string>
 		<string name="module_uninstall">卸载</string>
 		<string name="remove_of_files">移除OrangeFox文件</string>
+		<string name="remove_factory_reset_protection">清空 FRP 分区</string>
 		<string name="module_initd">启用 init.d 支持</string>
 		<string name="module_of_set">备份OrangeFox设置</string>
 		<string name="module_cam">启用 Camera2API</string>
