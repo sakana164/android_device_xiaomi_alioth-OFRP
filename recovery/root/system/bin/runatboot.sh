@@ -54,5 +54,6 @@ local i=$(getprop "ro.product.device");
 #
 set_read_write_partitions;
 check_unified_script;
+#/system/bin/setup_bb_applets.sh;
 exit 0;
 #
