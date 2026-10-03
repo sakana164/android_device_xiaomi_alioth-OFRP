@@ -1,12 +1,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2022-2025 The OrangeFox Recovery Project
+# Copyright (C) 2022-2026 The OrangeFox Recovery Project
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
 # Our various search paths for Soong namespaces
-MIKONA_SOONG_PATHS := device/xiaomi/alioth #device/xiaomi/sm8250-common # device/xiaomi/mikona device/xiaomi/munch
+MIKONA_SOONG_PATHS := device/xiaomi/alioth
 
 # Configure base.mk
 $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
