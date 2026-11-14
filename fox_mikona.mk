@@ -76,4 +76,7 @@ endif
 
 # unmount sdcards before rebooting
 OF_UNMOUNT_SDCARDS_BEFORE_REBOOT := 1
+
+# milder vibrations defaults
+OF_VIBRATION_DEFAULTS := 24,24,160
 #
